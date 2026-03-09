@@ -99,10 +99,18 @@ app.post('/inject', async (req, res) => {
         res.json({ status: "success" });
     } catch (e) { res.status(500).json({ status: "error" }); }
 });
+// --- JEMBATAN WAJAH KE JANTUNG (VERSI FIX) ---
+const path = require('path');
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+// 1. Kasih akses ke semua file (Video, Gambar, Script)
+app.use(express.static(path.join(__dirname, '.')));
 
-// HAPUS YANG LAMA, TEMPEL INI DI PALING BAWAH, ASU!
+// 2. Paksa Railway nampilin index.html di halaman utama
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// 3. Pastiin Port-nya Bener (PENTING BANGET, ASU!)
 const PORT = process.env.PORT || 7700; 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`[!] ENGINE ON AT PORT ${PORT}`);

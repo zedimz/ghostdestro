@@ -1,6 +1,7 @@
 {
   "name": "ghost-destro",
   "version": "1.0.0",
+  "description": "Ghost Destro Engine All-in-One",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -8,9 +9,13 @@
   "dependencies": {
     "@whiskeysockets/baileys": "latest",
     "pino": "latest",
-    "chalk": "4.1.2",
+    "chalk": "^4.1.2",
+    "cfonts": "latest",
+    "boxen": "^5.1.2",
     "express": "latest",
     "cors": "latest",
-    "body-parser": "latest"
+    "body-parser": "latest",
+    "path": "latest",
+    "fs": "latest"
   }
 }

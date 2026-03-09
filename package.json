@@ -1,8 +1,7 @@
 cat <<EOF > package.json
 {
-  "name": "ghost-destro-v10",
+  "name": "ghost-destro",
   "version": "1.0.0",
-  "description": "Real Bug Engine",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,12 +10,9 @@ cat <<EOF > package.json
     "@whiskeysockets/baileys": "latest",
     "pino": "latest",
     "chalk": "4.1.2",
-    "cfonts": "latest",
-    "boxen": "5.1.2",
     "express": "latest",
     "cors": "latest",
-    "body-parser": "latest",
-    "path": "latest"
+    "body-parser": "latest"
   }
 }
 EOF
